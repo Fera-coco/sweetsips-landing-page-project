@@ -8,15 +8,15 @@ const About = () => {
           </h2>
           <div className="space-y-4 text-lg text-muted-foreground">
             <p>
-              SweetSips is an upcoming fruit-based parfait and smoothie business dedicated to bringing
-              freshness and wellness to Cotonou.
+              Sweet Sips is a health-centric beverage and light-meal brand dedicated to producing 
+              nutritious, hygienic, and affordable parfaits and smoothies.
             </p>
             <p>
-              We focus on natural ingredients, fresh fruits, and sweet but healthy blends that not only
-              taste amazing but nourish your body.
+              Our mission is to promote simple, healthy eating by supplying customers with freshly 
+              prepared wellness blends made from high-quality fruits, yoghurt, and natural ingredients.
             </p>
             <p className="text-primary font-semibold">
-              Our mission is to make wellness enjoyable, one cup at a time.
+              Sweet Sips aims to become a reliable go-to option for quick, wholesome refreshment in an urban environment.
             </p>
           </div>
         </div>
