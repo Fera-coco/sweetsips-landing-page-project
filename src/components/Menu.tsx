@@ -1,49 +1,57 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import tropicalParfait from '@/assets/tropical-parfait.jpg';
+import greekParfait from '@/assets/greek-parfait.jpg';
+import granolaParfait from '@/assets/granola-parfait.jpg';
+import mixedParfait from '@/assets/mixed-parfait.jpg';
+import mangoSmoothie from '@/assets/mango-smoothie.jpg';
+import strawberrySmoothie from '@/assets/strawberry-smoothie.jpg';
+import pineappleSmoothie from '@/assets/pineapple-smoothie.jpg';
+import greenSmoothie from '@/assets/green-smoothie.jpg';
 
 const Menu = () => {
   const parfaits = [
     {
-      name: 'Pawpaw & Coconut Parfait',
-      description: 'Creamy yogurt layered with fresh pawpaw, shredded coconut, and crunchy granola.',
-      initials: 'PCP',
+      name: 'Tropical Fruit Parfait',
+      description: 'Layers of Greek yogurt with fresh mango, pineapple, banana, and crunchy granola.',
+      image: tropicalParfait,
     },
     {
-      name: 'Tropical Pineapple Parfait',
-      description: 'Sweet pineapple chunks with yogurt, honey drizzle, and granola topping.',
-      initials: 'TPP',
+      name: 'Greek Yogurt Fruit Parfait',
+      description: 'Creamy Greek yogurt layered with mixed berries, honey drizzle, and granola.',
+      image: greekParfait,
     },
     {
-      name: 'Mixed Nigerian Fruits Parfait',
-      description: 'An abundant mix of local fruits including mango, banana, watermelon with yogurt.',
-      initials: 'MNF',
+      name: 'Granola & Berry Parfait',
+      description: 'Crunchy granola with fresh strawberries, blueberries, and yogurt.',
+      image: granolaParfait,
     },
     {
-      name: 'Banana & Granola Parfait',
-      description: 'Sliced ripe banana layered with Greek yogurt and crunchy granola.',
-      initials: 'BGP',
+      name: 'Mixed Fruits Deluxe Parfait',
+      description: 'An abundant mix of assorted fresh fruits with yogurt and granola layers.',
+      image: mixedParfait,
     },
   ];
 
   const smoothies = [
     {
-      name: 'Watermelon Refresh',
-      description: 'Cool and hydrating blend of fresh watermelon with a hint of lime.',
-      initials: 'WR',
+      name: 'Mango Burst',
+      description: 'Vibrant golden smoothie packed with fresh mango and tropical flavors.',
+      image: mangoSmoothie,
     },
     {
-      name: 'Mango & Orange Blend',
-      description: 'Tropical fusion of ripe Nigerian mango and sweet orange juice.',
-      initials: 'MOB',
+      name: 'Strawberry Banana',
+      description: 'Classic pink smoothie blending sweet strawberries with creamy banana.',
+      image: strawberrySmoothie,
     },
     {
-      name: 'Banana & Tiger Nut Smoothie',
-      description: 'Creamy banana smoothie enriched with nutritious tiger nut milk.',
-      initials: 'BTS',
+      name: 'Pineapple Paradise',
+      description: 'Bright tropical smoothie featuring fresh pineapple and a hint of mint.',
+      image: pineappleSmoothie,
     },
     {
-      name: 'Soursop Delight',
-      description: 'Exotic soursop fruit blended smooth with natural sweetness.',
-      initials: 'SD',
+      name: 'Watermelon Cucumber Blend',
+      description: 'Refreshing smoothie with hydrating watermelon, cool cucumber, and fresh mint.',
+      image: greenSmoothie,
     },
   ];
 
@@ -63,10 +71,12 @@ const Menu = () => {
                 key={index}
                 className="overflow-hidden hover:shadow-soft transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="aspect-square overflow-hidden bg-primary/10 flex items-center justify-center">
-                  <span className="text-6xl font-bold text-primary">
-                    {item.initials}
-                  </span>
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                  />
                 </div>
                 <CardHeader>
                   <CardTitle className="text-lg">{item.name}</CardTitle>
@@ -90,10 +100,12 @@ const Menu = () => {
                 key={index}
                 className="overflow-hidden hover:shadow-soft transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="aspect-square overflow-hidden bg-primary/10 flex items-center justify-center">
-                  <span className="text-6xl font-bold text-primary">
-                    {item.initials}
-                  </span>
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                  />
                 </div>
                 <CardHeader>
                   <CardTitle className="text-lg">{item.name}</CardTitle>
