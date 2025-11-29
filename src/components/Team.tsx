@@ -14,34 +14,42 @@ const Team = () => {
     {
       name: 'Oratokhai Emmanuel',
       role: 'CEO',
+      description: 'Oversees operations, manages finances, approves recipes, and ensures consistent parfait and smoothie quality.',
     },
     {
       name: 'Odedele Chidera',
       role: 'Production Manager',
+      description: 'Handles daily preparation of parfaits and smoothies, monitors hygiene, taste standards, and inventory of fruits and yoghurt.',
     },
     {
       name: 'Adesanoye Elizabeth',
       role: 'Finance Manager',
+      description: 'Responsible for budgeting, expense tracking, partner contributions, and financial reporting.',
     },
     {
       name: 'Afolabi Olamilekan',
       role: 'Marketing Manager',
+      description: 'Manages branding, content creation, promotional campaigns, and customer engagement online.',
     },
     {
       name: 'Segun-Babs Peace Oluwaferanmi',
       role: 'COO',
+      description: 'Supervises production flow, coordinates staff, monitors speed of service, and ensures smooth daily operations.',
     },
     {
       name: 'Erute Eucharia',
       role: 'Customer Service/Sales',
+      description: 'Handles orders, customer feedback, social media queries, and assists with packaging.',
     },
     {
       name: 'Daniella Aigbokhan',
       role: 'Production Personnel',
+      description: 'Supports preparation, layering, bottling, and packaging of parfaits and smoothies.',
     },
     {
       name: 'Chukwuemeka Precious',
       role: 'Delivery Personnel',
+      description: 'Ensures timely, safe delivery of parfaits and smoothies to customers.',
     },
   ];
 
@@ -70,7 +78,8 @@ const Team = () => {
                 <CardTitle className="text-lg">{member.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-primary font-medium">{member.role}</p>
+                <p className="text-primary font-medium mb-2">{member.role}</p>
+                <p className="text-sm text-muted-foreground">{member.description}</p>
               </CardContent>
             </Card>
           ))}
