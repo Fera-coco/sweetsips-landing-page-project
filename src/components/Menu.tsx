@@ -1,4 +1,9 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import tropicalParfait from '@/assets/tropical-parfait.jpg';
 import greekParfait from '@/assets/greek-parfait.jpg';
 import granolaParfait from '@/assets/granola-parfait.jpg';
@@ -9,7 +14,35 @@ import pineappleSmoothie from '@/assets/pineapple-smoothie.jpg';
 import greenSmoothie from '@/assets/green-smoothie.jpg';
 
 const Menu = () => {
+  const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
+
+  const toppings = [
+    'Fresh Mango',
+    'Pineapple',
+    'Banana',
+    'Strawberries',
+    'Blueberries',
+    'Granola',
+    'Honey Drizzle',
+    'Mixed Berries',
+  ];
+
+  const handleToppingToggle = (topping: string) => {
+    setSelectedToppings(prev =>
+      prev.includes(topping)
+        ? prev.filter(t => t !== topping)
+        : [...prev, topping]
+    );
+  };
+
   const parfaits = [
+    {
+      name: 'Plain Yogurt Parfait',
+      description: 'Creamy Greek yogurt base - customize with your choice of toppings.',
+      image: greekParfait,
+      price: '1,000 CFA',
+      customizable: true,
+    },
     {
       name: 'Tropical Fruit Parfait',
       description: 'Layers of Greek yogurt with fresh mango, pineapple, banana, and crunchy granola.',
@@ -20,13 +53,13 @@ const Menu = () => {
       name: 'Greek Yogurt Fruit Parfait',
       description: 'Creamy Greek yogurt layered with mixed berries, honey drizzle, and granola.',
       image: greekParfait,
-      price: '2,000 CFA',
+      price: '1,800 CFA',
     },
     {
       name: 'Granola & Berry Parfait',
       description: 'Crunchy granola with fresh strawberries, blueberries, and yogurt.',
       image: granolaParfait,
-      price: '2,000 CFA',
+      price: '1,500 CFA',
     },
     {
       name: 'Mixed Fruits Deluxe Parfait',
@@ -41,25 +74,25 @@ const Menu = () => {
       name: 'Mango Burst',
       description: 'Vibrant golden smoothie packed with fresh mango and tropical flavors.',
       image: mangoSmoothie,
-      price: '2,000 CFA',
+      price: '1,800 CFA',
     },
     {
       name: 'Strawberry Banana',
       description: 'Classic pink smoothie blending sweet strawberries with creamy banana.',
       image: strawberrySmoothie,
-      price: '2,000 CFA',
+      price: '1,500 CFA',
     },
     {
       name: 'Pineapple Paradise',
       description: 'Bright tropical smoothie featuring fresh pineapple and a hint of mint.',
       image: pineappleSmoothie,
-      price: '2,000 CFA',
+      price: '1,600 CFA',
     },
     {
       name: 'Watermelon Cucumber Blend',
       description: 'Refreshing smoothie with hydrating watermelon, cool cucumber, and fresh mint.',
       image: greenSmoothie,
-      price: '2,000 CFA',
+      price: '1,400 CFA',
     },
   ];
 
@@ -93,7 +126,56 @@ const Menu = () => {
                   <CardDescription className="text-muted-foreground mb-3">
                     {item.description}
                   </CardDescription>
-                  <p className="text-primary font-semibold text-lg">{item.price}</p>
+                  <p className="text-primary font-semibold text-lg mb-3">{item.price}</p>
+                  {item.customizable && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full">
+                          Customize Toppings
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Choose Your Toppings</DialogTitle>
+                          <DialogDescription>
+                            Each topping is 500 CFA. Select as many as you'd like!
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          {toppings.map((topping) => (
+                            <div key={topping} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={topping}
+                                checked={selectedToppings.includes(topping)}
+                                onCheckedChange={() => handleToppingToggle(topping)}
+                              />
+                              <Label
+                                htmlFor={topping}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                {topping} - 500 CFA
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Toppings */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-semibold mb-8 text-center text-foreground">Individual Toppings</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            {toppings.map((topping, index) => (
+              <Card key={index} className="text-center">
+                <CardContent className="p-4">
+                  <p className="font-medium text-sm mb-1">{topping}</p>
+                  <p className="text-primary font-semibold text-sm">500 CFA</p>
                 </CardContent>
               </Card>
             ))}
