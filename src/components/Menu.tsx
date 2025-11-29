@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
+import { ShoppingCart } from 'lucide-react';
 import tropicalParfait from '@/assets/tropical-parfait.jpg';
 import greekParfait from '@/assets/greek-parfait.jpg';
 import granolaParfait from '@/assets/granola-parfait.jpg';
@@ -15,6 +18,9 @@ import greenSmoothie from '@/assets/green-smoothie.jpg';
 
 const Menu = () => {
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   const toppings = [
     'Fresh Mango',
@@ -33,6 +39,29 @@ const Menu = () => {
         ? prev.filter(t => t !== topping)
         : [...prev, topping]
     );
+  };
+
+  const handleAddToCart = (item: any, toppings?: string[]) => {
+    addItem({
+      id: `${item.name}-${Date.now()}`,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      toppings: toppings
+    });
+    toast({
+      title: "Added to cart",
+      description: `${item.name} has been added to your cart.`,
+    });
+  };
+
+  const handleCustomParfaitAdd = () => {
+    const plainParfait = parfaits.find(p => p.customizable);
+    if (plainParfait) {
+      handleAddToCart(plainParfait, selectedToppings);
+      setSelectedToppings([]);
+      setDialogOpen(false);
+    }
   };
 
   const parfaits = [
@@ -127,10 +156,10 @@ const Menu = () => {
                     {item.description}
                   </CardDescription>
                   <p className="text-primary font-semibold text-lg mb-3">{item.price}</p>
-                  {item.customizable && (
-                    <Dialog>
+                  {item.customizable ? (
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button variant="outline" className="w-full">
+                        <Button variant="outline" className="w-full mb-2">
                           Customize Toppings
                         </Button>
                       </DialogTrigger>
@@ -158,8 +187,19 @@ const Menu = () => {
                             </div>
                           ))}
                         </div>
+                        <Button onClick={handleCustomParfaitAdd} className="w-full">
+                          Add to Cart
+                        </Button>
                       </DialogContent>
                     </Dialog>
+                  ) : (
+                    <Button 
+                      className="w-full" 
+                      onClick={() => handleAddToCart(item)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Add to Cart
+                    </Button>
                   )}
                 </CardContent>
               </Card>
@@ -205,7 +245,14 @@ const Menu = () => {
                   <CardDescription className="text-muted-foreground mb-3">
                     {item.description}
                   </CardDescription>
-                  <p className="text-primary font-semibold text-lg">{item.price}</p>
+                  <p className="text-primary font-semibold text-lg mb-3">{item.price}</p>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => handleAddToCart(item)}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Add to Cart
+                  </Button>
                 </CardContent>
               </Card>
             ))}
