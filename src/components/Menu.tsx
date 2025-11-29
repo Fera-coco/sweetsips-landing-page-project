@@ -14,21 +14,25 @@ const Menu = () => {
       name: 'Tropical Fruit Parfait',
       description: 'Layers of Greek yogurt with fresh mango, pineapple, banana, and crunchy granola.',
       image: tropicalParfait,
+      price: '2,000 CFA',
     },
     {
       name: 'Greek Yogurt Fruit Parfait',
       description: 'Creamy Greek yogurt layered with mixed berries, honey drizzle, and granola.',
       image: greekParfait,
+      price: '2,000 CFA',
     },
     {
       name: 'Granola & Berry Parfait',
       description: 'Crunchy granola with fresh strawberries, blueberries, and yogurt.',
       image: granolaParfait,
+      price: '2,000 CFA',
     },
     {
       name: 'Mixed Fruits Deluxe Parfait',
       description: 'An abundant mix of assorted fresh fruits with yogurt and granola layers.',
       image: mixedParfait,
+      price: '2,000 CFA',
     },
   ];
 
@@ -37,21 +41,25 @@ const Menu = () => {
       name: 'Mango Burst',
       description: 'Vibrant golden smoothie packed with fresh mango and tropical flavors.',
       image: mangoSmoothie,
+      price: '2,000 CFA',
     },
     {
       name: 'Strawberry Banana',
       description: 'Classic pink smoothie blending sweet strawberries with creamy banana.',
       image: strawberrySmoothie,
+      price: '2,000 CFA',
     },
     {
       name: 'Pineapple Paradise',
       description: 'Bright tropical smoothie featuring fresh pineapple and a hint of mint.',
       image: pineappleSmoothie,
+      price: '2,000 CFA',
     },
     {
       name: 'Watermelon Cucumber Blend',
       description: 'Refreshing smoothie with hydrating watermelon, cool cucumber, and fresh mint.',
       image: greenSmoothie,
+      price: '2,000 CFA',
     },
   ];
 
@@ -82,9 +90,10 @@ const Menu = () => {
                   <CardTitle className="text-lg">{item.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-muted-foreground">
+                  <CardDescription className="text-muted-foreground mb-3">
                     {item.description}
                   </CardDescription>
+                  <p className="text-primary font-semibold text-lg">{item.price}</p>
                 </CardContent>
               </Card>
             ))}
@@ -111,9 +120,10 @@ const Menu = () => {
                   <CardTitle className="text-lg">{item.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-muted-foreground">
+                  <CardDescription className="text-muted-foreground mb-3">
                     {item.description}
                   </CardDescription>
+                  <p className="text-primary font-semibold text-lg">{item.price}</p>
                 </CardContent>
               </Card>
             ))}
