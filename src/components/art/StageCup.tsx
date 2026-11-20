@@ -11,16 +11,17 @@ const STAGES = [s0, s1, s2, s3, s4, s5];
 export const LAST_STAGE = STAGES.length - 1;
 
 /**
- * One stage photo. Each stage cross-fades with the one before it over a short window,
- * so two glasses are never fully on screen at the same time.
+ * One stage photo. Each new stage fades in on top of a solid previous stage (so nothing looks
+ * washed out mid-way), and the previous one is removed once it is fully covered.
  */
 const FADE = 0.3;
 const Layer = ({ src, index, stage }: { src: string; index: number; stage: MotionValue<number> }) => {
   const opacity = useTransform(stage, (v) => {
     const t = v - index + FADE / 2;
     const fadeIn = index === 0 ? 1 : Math.min(1, Math.max(0, t / FADE));
-    const fadeOut = index === LAST_STAGE ? 0 : Math.min(1, Math.max(0, (t - 1) / FADE));
-    return fadeIn * (1 - fadeOut);
+    // the stage underneath stays solid until the next one has fully faded in on top, then drops away
+    const covered = index !== LAST_STAGE && t - 1 >= FADE;
+    return covered ? 0 : fadeIn;
   });
   return <motion.img src={src} alt="" draggable={false} className="absolute inset-0 h-full w-full" style={{ opacity }} />;
 };
