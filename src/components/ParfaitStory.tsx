@@ -6,7 +6,7 @@ const steps = [
   { t: "Start with creamy yogurt.", d: "Thick Greek yogurt is the base of every parfait.", bg: "#FFD9DF" },
   { t: "Add the crunch.", d: "A layer of golden granola for that bite.", bg: "#FFF1C2" },
   { t: "Pile on fresh fruit.", d: "Mango, strawberries and blueberries, cut fresh every day.", bg: "#D7F0E2" },
-  { t: "Finish with honey.", d: "A drizzle on top, and it's ready for you.", bg: "#FFE3A3" },
+  { t: "Layer it up.", d: "More creamy yogurt between every layer, right to the top.", bg: "#FFE3A3" },
 ];
 
 const ParfaitStory = () => {
