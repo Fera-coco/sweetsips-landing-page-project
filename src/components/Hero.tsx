@@ -26,7 +26,7 @@ const Hero = () => {
 
   useEffect(() => {
     if (reduce) return;
-    const t = setTimeout(() => setI((v) => (v + 1) % flavours.length), 1000);
+    const t = setTimeout(() => setI((v) => (v + 1) % flavours.length), 2500);
     return () => clearTimeout(t);
   }, [i, reduce]);
 
@@ -86,7 +86,7 @@ const Hero = () => {
                 className={`relative grid h-16 w-16 place-items-center rounded-2xl transition ${n === i ? "bg-white shadow-lg" : "bg-white/40 hover:bg-white/70"}`}>
                 <img src={x.cut} alt="" className="h-12 w-auto object-contain" />
                 {n === i && !reduce && (
-                  <motion.span key={`bar-${i}`} className="absolute -bottom-2 left-2 h-1 rounded-full bg-plum" initial={{ width: 0 }} animate={{ width: "calc(100% - 1rem)" }} transition={{ duration: 1, ease: "linear" }} />
+                  <motion.span key={`bar-${i}`} className="absolute -bottom-2 left-2 h-1 rounded-full bg-plum" initial={{ width: 0 }} animate={{ width: "calc(100% - 1rem)" }} transition={{ duration: 2.5, ease: "linear" }} />
                 )}
               </button>
             ))}
