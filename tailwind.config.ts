@@ -14,6 +14,7 @@ export default {
     },
     extend: {
       colors: {
+        berry: '#E0344B', mango: '#FFB627', leaf: '#3E9B6A', plum: '#2B1620', cream: '#FFF8F0', blush: '#FFD9DF', lemon: '#FFF1C2', mint: '#D7F0E2',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -54,7 +55,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Manrope Variable"', 'system-ui', 'sans-serif'],
+        display: ['"Bricolage Grotesque Variable"', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-hero': 'var(--gradient-hero)',
