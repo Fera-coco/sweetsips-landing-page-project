@@ -1,6 +1,7 @@
 import mixed from "@/assets/mixed-parfait.jpg";
 import pineapple from "@/assets/pineapple-smoothie.jpg";
 
+import { Reveal } from "./Reveal";
 const team = [
   { name: "Oratokhai Emmanuel", role: "CEO" },
   { name: "Segun-Babs Peace Oluwaferanmi", role: "COO" },
@@ -22,7 +23,7 @@ const AboutTeam = () => (
           <img src={mixed} alt="Mixed fruit parfait" loading="lazy" className="aspect-[3/4] w-full rounded-[2rem] object-cover" />
           <img src={pineapple} alt="Pineapple smoothie" loading="lazy" className="mt-12 aspect-[3/4] w-full rounded-[2rem] object-cover" />
         </div>
-        <div>
+        <Reveal>
           <p className="text-sm font-bold uppercase tracking-widest text-berry">Our story</p>
           <h2 className="mt-3 font-display text-4xl font-extrabold text-plum md:text-5xl">Healthy eating should be simple.</h2>
           <p className="mt-5 text-lg leading-relaxed text-plum/75">
@@ -36,18 +37,18 @@ const AboutTeam = () => (
               </li>
             ))}
           </ul>
-        </div>
+        </Reveal>
       </div>
 
       <div className="mt-24">
         <h3 className="font-display text-3xl font-extrabold text-plum md:text-4xl">The people behind your cup.</h3>
         <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           {team.map((m, i) => (
-            <li key={m.name} className="rounded-[1.5rem] border border-border bg-cream p-5">
+            <li key={m.name}><Reveal delay={(i % 4) * 0.07} className="h-full rounded-[1.5rem] border border-border bg-cream p-5 transition hover:-translate-y-1">
               <span className={`grid h-14 w-14 place-items-center rounded-full font-display text-lg font-extrabold text-plum ${tints[i % 3]}`} aria-hidden="true">{initials(m.name)}</span>
               <p className="mt-4 font-bold leading-snug text-plum">{m.name}</p>
               <p className="mt-1 text-sm text-plum/60">{m.role}</p>
-            </li>
+            </Reveal></li>
           ))}
         </ul>
       </div>

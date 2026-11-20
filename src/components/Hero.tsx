@@ -1,61 +1,142 @@
-import heroImage from "@/assets/hero-parfaits.jpg";
-import mango from "@/assets/mango-smoothie.jpg";
-import strawberry from "@/assets/strawberry-smoothie.jpg";
-import { ArrowRight, Bike, Leaf, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, Plus } from "lucide-react";
+import mango from "@/assets/cut/mango-smoothie.webp";
+import strawberry from "@/assets/cut/strawberry-smoothie.webp";
+import pineapple from "@/assets/cut/pineapple-smoothie.webp";
+import green from "@/assets/cut/green-smoothie.webp";
+import { smoothies, cfa } from "@/data/menu";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
-const Hero = () => (
-  <section id="top" className="relative overflow-hidden bg-cream pt-28 md:pt-32">
-    <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-blush" />
-    <div aria-hidden="true" className="pointer-events-none absolute -bottom-48 -left-32 h-[26rem] w-[26rem] rounded-full bg-lemon" />
-    <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 md:grid-cols-[1.05fr_1fr] md:pb-24">
-      <div>
-        <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-widest text-berry shadow-sm">
-          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> Made fresh in Cotonou
-        </p>
-        <h1 className="mt-6 font-display text-5xl font-extrabold leading-[0.95] text-plum sm:text-6xl lg:text-7xl">
-          Fresh fruit, <span className="text-berry">layered</span> with love.
-        </h1>
-        <p className="mt-6 max-w-md text-lg leading-relaxed text-plum/75">
-          Parfaits and smoothies made from real fruit, creamy yogurt and crunchy granola. Healthy, hygienic and delivered to your door.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <a href="#menu" className="inline-flex h-14 items-center gap-2 rounded-full bg-berry px-7 font-bold text-white shadow-lg shadow-berry/25 hover:bg-plum">
-            Order now <ArrowRight className="h-5 w-5" aria-hidden="true" />
-          </a>
-          <a href="#build" className="inline-flex h-14 items-center rounded-full border-2 border-plum px-7 font-bold text-plum hover:bg-plum hover:text-cream">
-            Build your own
-          </a>
-        </div>
-        <ul className="mt-10 grid max-w-md grid-cols-3 gap-3 text-sm">
-          {[
-            { icon: Leaf, t: "Real fruit", s: "Nothing artificial" },
-            { icon: Bike, t: "Delivered", s: "Across Cotonou" },
-            { icon: Sparkles, t: "From 1,000", s: "CFA" },
-          ].map(({ icon: I, t, s }) => (
-            <li key={t} className="rounded-2xl bg-white/80 p-3 shadow-sm">
-              <I className="h-5 w-5 text-leaf" aria-hidden="true" />
-              <p className="mt-2 font-bold text-plum">{t}</p>
-              <p className="text-plum/60">{s}</p>
-            </li>
-          ))}
-        </ul>
+const looks = [
+  { cut: mango, word: "MANGO", bg: "#FFB627", deep: "#6E3F00", chip: "#FFE3A3" },
+  { cut: strawberry, word: "BERRY", bg: "#F8A5B5", deep: "#7D1730", chip: "#FFD9DF" },
+  { cut: pineapple, word: "PINEAPPLE", bg: "#FFE15C", deep: "#5E4E06", chip: "#FFF4BC" },
+  { cut: green, word: "CUCUMBER", bg: "#97D5A3", deep: "#164B30", chip: "#D7F0E2" },
+];
+const flavours = smoothies.map((s, i) => ({ ...s, ...looks[i] }));
+
+const Hero = () => {
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const reduce = useReducedMotion();
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  const f = flavours[i];
+
+  useEffect(() => {
+    if (paused || reduce) return;
+    const t = setTimeout(() => setI((v) => (v + 1) % flavours.length), 4200);
+    return () => clearTimeout(t);
+  }, [i, paused, reduce]);
+
+  const add = () => {
+    addItem({ id: f.name, name: f.name, price: cfa(f.price), image: f.image });
+    toast({ title: "Added to cart", description: `${f.name} is in your cart.` });
+  };
+
+  return (
+    <motion.section
+      id="top"
+      className="relative overflow-hidden pt-24 md:pt-28"
+      animate={{ backgroundColor: f.bg }}
+      transition={{ duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      aria-roledescription="carousel"
+      aria-label="Smoothie flavours"
+    >
+      {/* giant flavour word */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[22%] flex justify-center md:top-[16%]">
+        <AnimatePresence mode="popLayout">
+          <motion.span
+            key={f.word}
+            className="select-none whitespace-nowrap font-display font-extrabold leading-none text-white/35"
+            style={{ fontSize: "min(17vw, 15rem)" }}
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {f.word}
+          </motion.span>
+        </AnimatePresence>
       </div>
-      <div className="relative mx-auto w-full max-w-md md:max-w-none">
-        <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-2xl shadow-plum/20">
-          <img src={heroImage} alt="Fruit parfaits with yogurt, granola and fresh berries" className="h-full w-full object-cover" />
+
+      <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-5 pb-36 md:min-h-[78vh] md:grid-cols-[1fr_1.1fr] md:pb-44">
+        <div className="order-2 md:order-1">
+          <motion.p animate={{ color: f.deep }} className="text-xs font-bold uppercase tracking-[0.25em]">Made fresh in Cotonou</motion.p>
+          <div className="relative mt-4 min-h-[8.5rem] sm:min-h-[10rem] lg:min-h-[12rem]">
+            <AnimatePresence mode="wait">
+              <motion.div key={f.name} initial={{ opacity: 0, y: 24, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: 0.45 }}>
+                <h1 className="font-display text-5xl font-extrabold leading-[0.92] text-plum sm:text-6xl lg:text-7xl">{f.name}</h1>
+                <p className="mt-4 max-w-sm text-lg text-plum/75">{f.description}</p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <button onClick={add} className="inline-flex h-14 items-center gap-2 rounded-full bg-plum px-6 font-bold text-cream transition hover:scale-[1.03]">
+              <Plus className="h-5 w-5" aria-hidden="true" /> Add for {cfa(f.price)}
+            </button>
+            <a href="#menu" className="inline-flex h-14 items-center gap-2 rounded-full bg-white/70 px-6 font-bold text-plum backdrop-blur transition hover:bg-white">
+              Full menu <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </a>
+          </div>
+          <div className="mt-8 flex gap-3" role="tablist" aria-label="Choose a flavour">
+            {flavours.map((x, n) => (
+              <button key={x.name} role="tab" aria-selected={n === i} aria-label={x.name} onClick={() => setI(n)}
+                className={`relative grid h-16 w-16 place-items-center rounded-2xl transition ${n === i ? "bg-white shadow-lg" : "bg-white/40 hover:bg-white/70"}`}>
+                <img src={x.cut} alt="" className="h-12 w-auto object-contain" />
+                {n === i && !paused && !reduce && (
+                  <motion.span key={`bar-${i}`} className="absolute -bottom-2 left-2 h-1 rounded-full bg-plum" initial={{ width: 0 }} animate={{ width: "calc(100% - 1rem)" }} transition={{ duration: 4.2, ease: "linear" }} />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="float-slow absolute -left-2 top-10 sm:-left-6 w-28 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:w-36" style={{ ["--r" as string]: "-6deg" }}>
-          <img src={mango} alt="" className="aspect-square w-full object-cover" />
-        </div>
-        <div className="float-slow absolute -right-4 bottom-16 w-24 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:w-32" style={{ ["--r" as string]: "8deg", animationDelay: "1.5s" }}>
-          <img src={strawberry} alt="" className="aspect-square w-full object-cover" />
-        </div>
-        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-plum px-5 py-3 text-sm font-bold text-cream shadow-xl">
-          🥭 Try the Mango Burst
+
+        <div className="relative order-1 flex h-[22rem] items-end justify-center sm:h-[28rem] md:order-2 md:h-[34rem]">
+          <motion.div aria-hidden="true" className="absolute bottom-6 h-10 w-56 rounded-[50%] bg-black/15 blur-xl" animate={{ scaleX: [1, 0.9, 1] }} transition={{ duration: 3, repeat: Infinity }} />
+          <AnimatePresence mode="popLayout">
+            <motion.img
+              key={f.cut}
+              src={f.cut}
+              alt={f.name}
+              className="relative h-full w-auto object-contain drop-shadow-2xl"
+              initial={reduce ? { opacity: 0 } : { y: -260, rotate: -14, opacity: 0, scale: 0.8 }}
+              animate={{ y: 0, rotate: 0, opacity: 1, scale: 1 }}
+              exit={reduce ? { opacity: 0 } : { x: 220, rotate: 18, opacity: 0, scale: 0.85 }}
+              transition={{ type: "spring", stiffness: 110, damping: 14 }}
+            />
+          </AnimatePresence>
+          <motion.span
+            key={`chip-${i}`}
+            className="absolute right-0 top-10 rounded-full px-4 py-2 font-display text-lg font-extrabold text-plum shadow-lg md:right-4"
+            style={{ backgroundColor: f.chip }}
+            initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 8 }} transition={{ delay: 0.35, type: "spring", stiffness: 260, damping: 12 }}
+          >
+            {cfa(f.price)}
+          </motion.span>
         </div>
       </div>
-    </div>
-  </section>
-);
+
+      {/* wavy cream edge */}
+      <svg aria-hidden="true" className="absolute inset-x-0 bottom-[-1px] h-20 w-full md:h-28" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <motion.path
+          fill="#FFF8F0"
+          animate={reduce ? undefined : { d: [
+            "M0,60 C160,10 320,110 480,60 C640,10 800,110 960,60 C1120,10 1280,110 1440,60 L1440,120 L0,120 Z",
+            "M0,70 C160,110 320,20 480,70 C640,110 800,20 960,70 C1120,110 1280,20 1440,70 L1440,120 L0,120 Z",
+            "M0,60 C160,10 320,110 480,60 C640,10 800,110 960,60 C1120,10 1280,110 1440,60 L1440,120 L0,120 Z",
+          ] }}
+          d="M0,60 C160,10 320,110 480,60 C640,10 800,110 960,60 C1120,10 1280,110 1440,60 L1440,120 L0,120 Z"
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </svg>
+    </motion.section>
+  );
+};
 
 export default Hero;

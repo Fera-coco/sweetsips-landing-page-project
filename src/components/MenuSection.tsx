@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Reveal } from "./Reveal";
 import { Plus } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -27,7 +29,7 @@ const MenuSection = () => {
   return (
     <section id="menu" className="bg-cream py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-5">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+        <Reveal className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="text-sm font-bold uppercase tracking-widest text-berry">The menu</p>
             <h2 className="mt-3 font-display text-4xl font-extrabold text-plum md:text-6xl">Pick your treat.</h2>
@@ -40,11 +42,12 @@ const MenuSection = () => {
               </button>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <li key={item.name} className="group flex flex-col overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-border transition hover:-translate-y-1 hover:shadow-xl">
+          <AnimatePresence mode="popLayout">
+          {items.map((item, n) => (
+            <motion.li layout key={item.name} initial={{ opacity: 0, y: 50, rotate: n % 2 ? 2 : -2 }} whileInView={{ opacity: 1, y: 0, rotate: 0 }} exit={{ opacity: 0, scale: 0.9 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.55, delay: (n % 3) * 0.08 }} className="group flex flex-col overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-border transition hover:-translate-y-1 hover:shadow-xl">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={item.image} alt={item.name} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 {item.tag && <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-plum shadow">{item.tag}</span>}
@@ -59,8 +62,9 @@ const MenuSection = () => {
                   </button>
                 </div>
               </div>
-            </li>
+            </motion.li>
           ))}
+          </AnimatePresence>
         </ul>
       </div>
     </section>

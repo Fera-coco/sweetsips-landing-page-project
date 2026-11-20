@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import MenuSection from "@/components/MenuSection";
+import ParfaitStory from "@/components/ParfaitStory";
 import BuildYourOwn from "@/components/BuildYourOwn";
 import HowItWorks from "@/components/HowItWorks";
 import AboutTeam from "@/components/AboutTeam";
@@ -16,6 +17,7 @@ const Index = () => (
       <Hero />
       <Marquee />
       <MenuSection />
+      <ParfaitStory />
       <BuildYourOwn />
       <HowItWorks />
       <AboutTeam />

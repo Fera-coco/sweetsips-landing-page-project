@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { cfa, parfaits, toppings, TOPPING_PRICE } from "@/data/menu";
@@ -51,7 +52,7 @@ const BuildYourOwn = () => {
           <div className="mt-8 flex items-center justify-between border-t border-plum/10 pt-6">
             <div>
               <p className="text-sm text-plum/60">{picked.length} topping{picked.length === 1 ? "" : "s"}</p>
-              <p className="font-display text-3xl font-extrabold text-berry" aria-live="polite">{cfa(total)}</p>
+              <motion.p key={total} initial={{ scale: 1.25 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 15 }} className="origin-left font-display text-3xl font-extrabold text-berry" aria-live="polite">{cfa(total)}</motion.p>
             </div>
             <button onClick={add} className="h-14 rounded-full bg-berry px-7 font-bold text-white hover:bg-plum">Add to cart</button>
           </div>
