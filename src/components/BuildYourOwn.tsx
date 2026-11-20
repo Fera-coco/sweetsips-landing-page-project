@@ -1,7 +1,20 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Check } from "lucide-react";
-import { motion } from "framer-motion";
-import { RealCup } from "./art/RealCup";
+import { motion, useInView } from "framer-motion";
+import { BuilderCup } from "./art/StageCup";
+import mangoImg from "@/assets/real/mango.webp";
+import pineImg from "@/assets/real/pineapple.webp";
+import bananaImg from "@/assets/real/banana.webp";
+import strawImg from "@/assets/real/strawberry-half.webp";
+import blueImg from "@/assets/real/blueberry.webp";
+import granolaImg from "@/assets/real/granola.webp";
+import honeyImg from "@/assets/real/honey.webp";
+import raspImg from "@/assets/real/raspberry.webp";
+
+const thumbs: Record<string, string> = {
+  "Fresh Mango": mangoImg, Pineapple: pineImg, Banana: bananaImg, Strawberries: strawImg,
+  Blueberries: blueImg, Granola: granolaImg, "Honey Drizzle": honeyImg, "Mixed Berries": raspImg,
+};
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { cfa, parfaits, toppings, TOPPING_PRICE } from "@/data/menu";
@@ -11,6 +24,8 @@ const colours = ["bg-lemon", "bg-blush", "bg-mint"];
 
 const BuildYourOwn = () => {
   const [picked, setPicked] = useState<string[]>([]);
+  const cupRef = useRef<HTMLDivElement>(null);
+  const cupSeen = useInView(cupRef, { once: true, amount: 0.3 });
   const { addItem } = useCart();
   const { toast } = useToast();
   const total = base.price + picked.length * TOPPING_PRICE;
@@ -29,9 +44,9 @@ const BuildYourOwn = () => {
           <p className="text-sm font-bold uppercase tracking-widest text-mango">Build your own</p>
           <h2 className="mt-3 font-display text-4xl font-extrabold md:text-6xl">Your parfait, <span className="text-mango">your rules.</span></h2>
           <p className="mt-5 max-w-md text-lg text-cream/75">Start with our creamy Greek yogurt base for {cfa(base.price)}, then add as many toppings as you like at {cfa(TOPPING_PRICE)} each.</p>
-          <div className="relative mx-auto mt-6 w-full max-w-[8.5rem] md:mt-8 md:max-w-[15rem]">
+          <div className="relative mx-auto mt-6 w-full max-w-[8rem] md:mt-8 md:max-w-[13rem]">
             <div aria-hidden="true" className="absolute inset-[12%] rounded-full bg-mango/25 blur-3xl" />
-            <div className="relative"><RealCup selected={picked} /></div>
+            <div className="relative" ref={cupRef}><BuilderCup toppings={picked} show={cupSeen} /></div>
           </div>
         </div>
         <div className="rounded-[2rem] bg-cream p-6 text-plum md:p-8">
@@ -44,7 +59,7 @@ const BuildYourOwn = () => {
                 <li key={t}>
                   <button onClick={() => toggle(t)} aria-pressed={on}
                     className={`flex h-12 w-full items-center justify-between rounded-2xl px-3 md:h-14 md:px-4 text-left text-sm font-bold transition ${on ? "bg-plum text-cream" : `${colours[i % 3]} hover:ring-2 hover:ring-plum`}`}>
-                    {t}
+                    <span className="flex items-center gap-2"><img src={thumbs[t]} alt="" className="h-7 w-7 object-contain" />{t}</span>
                     <span className={`grid h-6 w-6 place-items-center rounded-full ${on ? "bg-mango text-plum" : "bg-white/70"}`}>{on && <Check className="h-4 w-4" aria-hidden="true" />}</span>
                   </button>
                 </li>

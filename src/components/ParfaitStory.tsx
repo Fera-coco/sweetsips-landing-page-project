@@ -1,4 +1,4 @@
-import { StoryCup } from "./art/RealCup";
+import { StageCup } from "./art/StageCup";
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 
@@ -18,6 +18,7 @@ const ParfaitStory = () => {
   const p = reduce ? done : smooth;
   const [step, setStep] = useState(reduce ? 3 : 0);
   useMotionValueEvent(scrollYProgress, "change", (v) => { if (!reduce) setStep(Math.min(3, Math.floor(v * 4.4))); });
+  const stageP = useTransform(p, [0.02, 0.2, 0.42, 0.62, 0.8, 0.95], [0, 1, 2, 3, 4, 5]);
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const s = steps[step];
   const height = useMemo(() => (reduce ? "auto" : "420vh"), [reduce]);
@@ -44,7 +45,7 @@ const ParfaitStory = () => {
           </motion.a>
         </div>
         <div className="order-1 flex h-[40svh] items-center justify-center md:order-2 md:h-[70vh]">
-          <div className="flex aspect-[520/1164] h-full max-h-[36rem] max-w-full items-center self-center"><StoryCup p={p} /></div>
+          <div className="flex aspect-[520/1358] h-full max-h-[38rem] max-w-full items-center self-center"><StageCup stage={stageP} label="A parfait glass filling up layer by layer" /></div>
         </div>
       </div>
     </motion.section>
