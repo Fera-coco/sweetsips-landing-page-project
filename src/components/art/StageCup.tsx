@@ -11,19 +11,17 @@ import s5 from "@/assets/real/stage-5.webp";
 const STAGES = [s0, s1, s2, s3, s4, s5];
 export const LAST_STAGE = STAGES.length - 1;
 
-/** One stage photo, revealed from the bottom up as `stage` passes its index. */
+/** One stage photo, poured in from the top down as `stage` passes its index, so the glass base stays put. */
 const Layer = ({ src, index, stage }: { src: string; index: number; stage: MotionValue<number> }) => {
   const r = useTransform(stage, (v) => Math.min(1, Math.max(0, v - (index - 1))));
-  const mask = useTransform(r, (v) => `linear-gradient(to top, #000 ${v * 130 - 30}%, transparent ${v * 130}%)`);
+  const mask = useTransform(r, (v) => `linear-gradient(to bottom, #000 ${v * 140 - 40}%, transparent ${v * 140}%)`);
   // fade in as it arrives, fade out once the next stage has fully covered it (glasses differ a touch)
   const opacity = useTransform(stage, (v) => {
     const inA = Math.min(1, Math.max(0, (v - (index - 1)) / 0.15));
     const out = index === LAST_STAGE ? 1 : 1 - Math.min(1, Math.max(0, v - index - 0.85) / 0.15);
     return inA * out;
   });
-  const y = useTransform(r, [0, 1], ["1.5%", "0%"]);
-  const scale = useTransform(r, [0, 0.7, 1], [1.02, 0.995, 1]);
-  return <motion.img src={src} alt="" draggable={false} className="absolute inset-0 h-full w-full" style={{ maskImage: mask, WebkitMaskImage: mask, opacity, y, scale }} />;
+  return <motion.img src={src} alt="" draggable={false} className="absolute inset-0 h-full w-full" style={{ maskImage: mask, WebkitMaskImage: mask, opacity }} />;
 };
 
 /** The parfait: pass a stage from 0 (empty glass) to LAST_STAGE (full). Fractions blend. */
