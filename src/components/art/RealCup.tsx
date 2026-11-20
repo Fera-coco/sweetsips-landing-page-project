@@ -13,51 +13,70 @@ import banana from "@/assets/real/banana.webp";
 import granola from "@/assets/real/granola.webp";
 import yogurtFill from "@/assets/real/yogurt-fill.webp";
 import yogurtCap from "@/assets/real/yogurt-cap.webp";
+import yogurtRibbon from "@/assets/real/yogurt-ribbon.webp";
 
 /** A piece placed in % of the cup box: x/y are the centre, w is the width. */
-export type Piece = { src: string; x: number; y: number; w: number; r?: number };
+export type Piece = { src: string; x: number; y: number; w: number; r?: number; shade?: boolean };
 
 const YOGURT_TOP = 53; // % from the top where the yogurt surface sits
-const FILL = 40; // how much of the glass height the layers can use
-const looks: Record<string, { src: string[]; k: number; rows: number }> = {
-  Granola: { src: [granola], k: 1.2, rows: 2 },
-  Banana: { src: [banana], k: 1.05, rows: 1 },
-  Pineapple: { src: [pineapple], k: 1, rows: 1 },
-  "Fresh Mango": { src: [mango], k: 0.95, rows: 1 },
-  "Mixed Berries": { src: [raspberry, blackberry], k: 0.9, rows: 1 },
-  Strawberries: { src: [strawberryHalf, strawberry, strawberryHalf], k: 1.1, rows: 1 },
-  Blueberries: { src: [blueberry], k: 0.7, rows: 1 },
+const FILL = 43; // how much of the glass height the layers can use
+const looks: Record<string, { src: string[]; k: number }> = {
+  Granola: { src: [granola], k: 1.1 },
+  Banana: { src: [banana], k: 1 },
+  Pineapple: { src: [pineapple], k: 0.95 },
+  "Fresh Mango": { src: [mango], k: 0.9 },
+  "Mixed Berries": { src: [raspberry, blackberry], k: 0.85 },
+  Strawberries: { src: [strawberryHalf, strawberry, strawberryHalf], k: 1.05 },
+  Blueberries: { src: [blueberry], k: 0.62 },
 };
 
 /** Height of one layer when `count` toppings share the glass. */
 export const segment = (count: number) => Math.min(8, FILL / Math.max(1, count));
 /** Where the yogurt column reaches when `count` layers are in. */
-export const yogurtTop = (count: number) => (count ? YOGURT_TOP - count * segment(count) + 0.35 * segment(count) : YOGURT_TOP);
+export const yogurtTop = (count: number) => (count ? YOGURT_TOP - count * segment(count) + 0.2 * segment(count) : YOGURT_TOP);
 
-/** The pieces for one topping when it is the `level`-th layer from the bottom. */
+/** The yogurt layer laid between layer `level - 1` and layer `level`. */
+export const ribbon = (level: number, count: number) => {
+  const seg = segment(count);
+  return { top: YOGURT_TOP - level * seg - 0.3 * seg, height: 0.55 * seg };
+};
+
+/**
+ * The pieces for one topping when it is the `level`-th layer from the bottom.
+ * A back row (a little smaller and shaded, as if deeper in the glass) and a dense
+ * front row pressed against the glass, overlapping so the layer reads as one band.
+ */
 export const layer = (name: string, level: number, count: number): Piece[] => {
   const l = looks[name];
   const seg = segment(count);
   const top = level === count - 1;
-  const w = Math.min(28, 2.5 * seg * l.k);
+  const w = Math.min(28, 2.3 * seg * l.k);
   const jit = (i: number, k: number) => (((i + 1) * 7919 * (level + 3) * k) % 100) / 100 - 0.5;
+  const centre = YOGURT_TOP - level * seg - 0.55 * seg;
+  const rows = [
+    { dy: -0.18, size: 0.82, shade: true, gap: 0.62, off: 0.5 },
+    { dy: 0.12, size: 1, shade: false, gap: 0.7, off: 0 },
+    ...(top ? [{ dy: -0.55, size: 0.9, shade: false, gap: 0.75, off: 0.3 }] : []),
+  ];
+  if (name === "Granola") rows.push({ dy: -0.05, size: 0.95, shade: false, gap: 0.65, off: 0.75 });
   const out: Piece[] = [];
-  for (let row = 0; row < l.rows + (top ? 1 : 0); row++) {
-    const n = Math.max(3, Math.round(84 / (w * (l.rows > 1 ? 0.95 : 1.3)))) - (row % 2);
-    const yRow = YOGURT_TOP - level * seg - (l.rows > 1 ? 0.3 + row * 0.35 : 0.5) * seg;
+  rows.forEach((row, r) => {
+    const pw = w * row.size;
+    const n = Math.max(3, Math.ceil(92 / (pw * row.gap)));
     for (let i = 0; i < n; i++) {
-      const k = row * 10 + i;
-      const x = 8 + ((i + (row % 2 ? 1 : 0.5)) * 84) / n + jit(k, 3) * 6;
-      const crown = top && row === l.rows ? (1 - Math.abs(x - 50) / 50) * seg * 0.45 : 0;
+      const k = r * 20 + i;
+      const x = 4 + ((i + row.off) * 92) / n + jit(k, 3) * 4;
+      const crown = r === 2 ? (1 - Math.abs(x - 50) / 50) * seg * 0.35 : 0;
       out.push({
         src: l.src[(k + level) % l.src.length],
         x,
-        y: yRow + jit(k, 7) * seg * 0.3 - crown,
-        w: w * (0.82 + (jit(k, 11) + 0.5) * 0.36),
+        y: centre + row.dy * seg + jit(k, 7) * seg * 0.18 - crown,
+        w: pw * (0.88 + (jit(k, 11) + 0.5) * 0.24),
         r: ((k * 53 + level * 31) % 70) - 35,
-      });
+        shade: row.shade,
+      } as Piece);
     }
-  }
+  });
   return out;
 };
 
@@ -102,7 +121,7 @@ export const RealCup = ({ selected }: { selected: string[] }) => {
                   alt=""
                   draggable={false}
                   className="absolute drop-shadow-[0_2px_2px_rgba(60,20,10,.3)]"
-                  style={{ left: `${p.x}%`, width: `${p.w}%`, x: "-50%" }}
+                  style={{ left: `${p.x}%`, width: `${p.w}%`, x: "-50%", filter: p.shade ? "brightness(.82) saturate(.9)" : undefined }}
                   initial={reduce ? { opacity: 0, y: "-50%", top: `${p.y}%` } : { y: "-470%", top: `${p.y}%`, rotate: (p.r ?? 0) - 90, opacity: 0 }}
                   animate={{ y: "-50%", top: `${p.y}%`, rotate: p.r ?? 0, opacity: 1 }}
                   exit={reduce ? { opacity: 0 } : { y: "-110%", opacity: 0, scale: 0.6, transition: { duration: 0.25 } }}
@@ -110,6 +129,19 @@ export const RealCup = ({ selected }: { selected: string[] }) => {
                 />
               )),
             ])}
+            {order.map((k, level) => level > 0 && (
+                <motion.img
+                  key={`${k}-yog`}
+                  src={yogurtRibbon}
+                  alt=""
+                  draggable={false}
+                  className="absolute left-[2%] w-[96%]"
+                  initial={{ opacity: 0, scaleX: 0.6, top: `${ribbon(level, order.length).top}%`, height: `${ribbon(level, order.length).height}%` }}
+                  animate={{ opacity: 1, scaleX: 1, top: `${ribbon(level, order.length).top}%`, height: `${ribbon(level, order.length).height}%` }}
+                  exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                />
+            ))}
           </AnimatePresence>
         </YogurtRise>
     </div>
@@ -132,7 +164,14 @@ const Drop = ({ p, from, to, piece }: { p: MotionValue<number>; from: number; to
   const y = useTransform(p, [from, to], ["-550%", "-50%"]);
   const rotate = useTransform(p, [from, to], [(piece.r ?? 0) - 120, piece.r ?? 0]);
   const opacity = useTransform(p, [from, from + 0.01], [0, 1]);
-  return <motion.img src={piece.src} alt="" draggable={false} className="absolute drop-shadow-[0_3px_3px_rgba(60,20,10,.35)]" style={{ ...place(piece), x: "-50%", y, rotate, opacity }} />;
+  return <motion.img src={piece.src} alt="" draggable={false} className="absolute drop-shadow-[0_3px_3px_rgba(60,20,10,.35)]" style={{ ...place(piece), x: "-50%", y, rotate, opacity, filter: piece.shade ? "brightness(.82) saturate(.9)" : undefined }} />;
+};
+
+const Ribbon = ({ p, at, level }: { p: MotionValue<number>; at: number; level: number }) => {
+  const opacity = useTransform(p, [at, at + 0.025], [0, 1]);
+  const scaleX = useTransform(p, [at, at + 0.025], [0.6, 1]);
+  const r = ribbon(level, STORY.length);
+  return <motion.img src={yogurtRibbon} alt="" draggable={false} className="absolute left-[2%] w-[96%]" style={{ top: `${r.top}%`, height: `${r.height}%`, opacity, scaleX }} />;
 };
 
 const STORY = ["Granola", "Banana", "Fresh Mango", "Strawberries", "Blueberries", "Mixed Berries", "Pineapple"];
@@ -152,6 +191,7 @@ export const StoryCup = ({ p }: { p: MotionValue<number> }) => {
         {STORY.flatMap((k, level) => [
           ...layer(k, level, STORY.length).map((piece, i) => <Drop key={`${k}${i}`} p={p} from={start(level) + i * 0.01} to={start(level) + 0.07 + i * 0.01} piece={piece} />),
         ])}
+        {STORY.map((k, level) => (level > 0 ? <Ribbon key={`y${k}`} p={p} at={start(level) - 0.01} level={level} /> : null))}
       </div>
       <img src={glass} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full opacity-[.15] mix-blend-screen" draggable={false} />
     </div>
