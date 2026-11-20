@@ -23,7 +23,7 @@ const Layer = ({ src, index, stage }: { src: string; index: number; stage: Motio
     const covered = index !== LAST_STAGE && t - 1 >= FADE;
     return covered ? 0 : fadeIn;
   });
-  return <motion.img src={src} alt="" draggable={false} className="absolute inset-0 h-full w-full" style={{ opacity }} />;
+  return <motion.img src={src} alt="" draggable={false} decoding="async" className="absolute inset-0 h-full w-full will-change-[opacity]" style={{ opacity }} />;
 };
 
 /** The parfait: pass a stage from 0 (empty glass) to LAST_STAGE (full). Fractions blend. */

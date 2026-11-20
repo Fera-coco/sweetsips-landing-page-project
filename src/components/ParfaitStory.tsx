@@ -19,13 +19,15 @@ const ParfaitStory = () => {
   // The cup follows the step, so the picture always matches the words.
   const stageP = useSpring(1, { stiffness: 70, damping: 18 });
   useEffect(() => stageP.set(step + 1), [step, stageP]);
-  // One scroll = one step. While the section is pinned, a wheel flick or swipe moves exactly one step;
-  // past the first or last step the page scrolls on as normal.
+  // One scroll = one step.
+  // Mouse and trackpad: one wheel flick moves exactly one step.
+  // Phones and tablets keep their own native scrolling (smooth momentum, nothing held back);
+  // the step still changes as you pass each screen, and the cup and words change together.
+  const touch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || touch) return;
     let locked = false;
     let last = 0;
-    let touchY = 0;
     let free = 0; // last time the page scrolled normally (outside the pinned steps)
     const pinned = () => {
       const r = ref.current?.getBoundingClientRect();
@@ -57,25 +59,9 @@ const ParfaitStory = () => {
       last = Date.now();
       if (!locked) go(y);
     };
-    const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
-    const onTouchMove = (e: TouchEvent) => {
-      const dy = touchY - e.touches[0].clientY;
-      if (Math.abs(dy) < 6) return;
-      const y = target(Math.sign(dy));
-      if (y === null) return;
-      e.preventDefault();
-      last = Date.now();
-      if (!locked && Math.abs(dy) > 30) go(y);
-    };
     window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-    };
-  }, [reduce]);
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [reduce, touch]);
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const s = steps[step];
   const height = useMemo(() => (reduce ? "auto" : "500svh"), [reduce]);

@@ -66,7 +66,7 @@ const Hero = () => {
           <motion.p animate={{ color: f.deep }} className="text-xs font-bold uppercase tracking-[0.25em]">Made fresh in Cotonou</motion.p>
           <div className="relative mt-4 min-h-[8.5rem] sm:min-h-[10rem] lg:min-h-[12rem]">
             <AnimatePresence mode="wait">
-              <motion.div key={f.name} initial={{ opacity: 0, y: 24, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: 0.45 }}>
+              <motion.div key={f.name} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.4 }}>
                 <h1 className="font-display text-5xl font-extrabold leading-[0.92] text-plum sm:text-6xl lg:text-7xl">{f.name}</h1>
                 <p className="mt-4 max-w-sm text-lg text-plum/75">{f.description}</p>
               </motion.div>
@@ -100,13 +100,13 @@ const Hero = () => {
               key={f.cut}
               role="img"
               aria-label={f.name}
-              className="relative h-full"
+              className="relative h-full will-change-transform"
               initial={reduce ? { opacity: 0 } : { y: -260, rotate: -14, opacity: 0, scale: 0.8 }}
               animate={{ y: 0, rotate: 0, opacity: 1, scale: 1 }}
               exit={reduce ? { opacity: 0 } : { x: 220, rotate: 18, opacity: 0, scale: 0.85 }}
               transition={{ type: "spring", stiffness: 110, damping: 14 }}
             >
-              <img src={f.cut} alt="" className="h-full w-auto object-contain drop-shadow-2xl" draggable={false} />
+              <img src={f.cut} alt="" className="h-full w-auto object-contain" decoding="async" draggable={false} />
             </motion.div>
           </AnimatePresence>
           <motion.span
