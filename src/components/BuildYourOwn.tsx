@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Check } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { BuilderCup } from "./art/StageCup";
 import mangoImg from "@/assets/real/mango.webp";
 import pineImg from "@/assets/real/pineapple.webp";
@@ -24,8 +24,6 @@ const colours = ["bg-lemon", "bg-blush", "bg-mint"];
 
 const BuildYourOwn = () => {
   const [picked, setPicked] = useState<string[]>([]);
-  const cupRef = useRef<HTMLDivElement>(null);
-  const cupSeen = useInView(cupRef, { once: true, amount: 0.3 });
   const { addItem } = useCart();
   const { toast } = useToast();
   const total = base.price + picked.length * TOPPING_PRICE;
@@ -46,7 +44,7 @@ const BuildYourOwn = () => {
           <p className="mt-5 max-w-md text-lg text-cream/75">Start with our creamy Greek yogurt base for {cfa(base.price)}, then add as many toppings as you like at {cfa(TOPPING_PRICE)} each.</p>
           <div className="relative mx-auto mt-6 w-full max-w-[8rem] md:mt-8 md:max-w-[13rem]">
             <div aria-hidden="true" className="absolute inset-[12%] rounded-full bg-mango/25 blur-3xl" />
-            <div className="relative" ref={cupRef}><BuilderCup toppings={picked} show={cupSeen} /></div>
+            <div className="relative"><BuilderCup toppings={picked} /></div>
           </div>
         </div>
         <div className="rounded-[2rem] bg-cream p-6 text-plum md:p-8">
