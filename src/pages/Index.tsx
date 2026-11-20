@@ -1,3 +1,4 @@
+import { ArtDefs } from "@/components/art/defs";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
@@ -12,6 +13,7 @@ import FloatingButtons from "@/components/FloatingButtons";
 const Index = () => (
   <div className="min-h-screen bg-cream">
     <a href="#menu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-plum focus:px-4 focus:py-2 focus:text-cream">Skip to menu</a>
+    <ArtDefs />
     <Navbar />
     <main>
       <Hero />

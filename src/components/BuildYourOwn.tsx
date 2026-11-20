@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { motion } from "framer-motion";
+import { ParfaitCup } from "./art/ParfaitCup";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { cfa, parfaits, toppings, TOPPING_PRICE } from "@/data/menu";
@@ -28,8 +29,9 @@ const BuildYourOwn = () => {
           <p className="text-sm font-bold uppercase tracking-widest text-mango">Build your own</p>
           <h2 className="mt-3 font-display text-4xl font-extrabold md:text-6xl">Your parfait, <span className="text-mango">your rules.</span></h2>
           <p className="mt-5 max-w-md text-lg text-cream/75">Start with our creamy Greek yogurt base for {cfa(base.price)}, then add as many toppings as you like at {cfa(TOPPING_PRICE)} each.</p>
-          <div className="mt-8 overflow-hidden rounded-[2rem]">
-            <img src={base.image} alt="A Greek yogurt parfait ready for toppings" className="aspect-[16/10] w-full object-cover" loading="lazy" />
+          <div className="relative mx-auto mt-8 aspect-[400/450] w-full max-w-md">
+            <div aria-hidden="true" className="absolute inset-[12%] rounded-full bg-mango/25 blur-3xl" />
+            <div className="relative h-full w-full"><ParfaitCup selected={picked} /></div>
           </div>
         </div>
         <div className="rounded-[2rem] bg-cream p-6 text-plum md:p-8">

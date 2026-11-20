@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Plus } from "lucide-react";
-import mango from "@/assets/cut/mango-smoothie.webp";
-import strawberry from "@/assets/cut/strawberry-smoothie.webp";
-import pineapple from "@/assets/cut/pineapple-smoothie.webp";
-import green from "@/assets/cut/green-smoothie.webp";
 import { smoothies, cfa } from "@/data/menu";
+import { Smoothie, type Flavour } from "./art/Smoothie";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 
 const looks = [
-  { cut: mango, word: "MANGO", bg: "#FFB627", deep: "#6E3F00", chip: "#FFE3A3" },
-  { cut: strawberry, word: "BERRY", bg: "#F8A5B5", deep: "#7D1730", chip: "#FFD9DF" },
-  { cut: pineapple, word: "PINEAPPLE", bg: "#FFE15C", deep: "#5E4E06", chip: "#FFF4BC" },
-  { cut: green, word: "CUCUMBER", bg: "#97D5A3", deep: "#164B30", chip: "#D7F0E2" },
+  { cut: "mango" as Flavour, word: "MANGO", bg: "#FFC857", deep: "#6E3F00", chip: "#FFE3A3" },
+  { cut: "strawberry" as Flavour, word: "BERRY", bg: "#FBC0CB", deep: "#7D1730", chip: "#FFD9DF" },
+  { cut: "pineapple" as Flavour, word: "PINEAPPLE", bg: "#FFEB8A", deep: "#5E4E06", chip: "#FFF4BC" },
+  { cut: "cucumber" as Flavour, word: "CUCUMBER", bg: "#B5E2B9", deep: "#164B30", chip: "#D7F0E2" },
 ];
 const flavours = smoothies.map((s, i) => ({ ...s, ...looks[i] }));
 
@@ -88,7 +85,7 @@ const Hero = () => {
             {flavours.map((x, n) => (
               <button key={x.name} role="tab" aria-selected={n === i} aria-label={x.name} onClick={() => setI(n)}
                 className={`relative grid h-16 w-16 place-items-center rounded-2xl transition ${n === i ? "bg-white shadow-lg" : "bg-white/40 hover:bg-white/70"}`}>
-                <img src={x.cut} alt="" className="h-12 w-auto object-contain" />
+                <span className="h-12"><Smoothie flavour={x.cut} small /></span>
                 {n === i && !paused && !reduce && (
                   <motion.span key={`bar-${i}`} className="absolute -bottom-2 left-2 h-1 rounded-full bg-plum" initial={{ width: 0 }} animate={{ width: "calc(100% - 1rem)" }} transition={{ duration: 4.2, ease: "linear" }} />
                 )}
@@ -100,16 +97,18 @@ const Hero = () => {
         <div className="relative order-1 flex h-[22rem] items-end justify-center sm:h-[28rem] md:order-2 md:h-[34rem]">
           <motion.div aria-hidden="true" className="absolute bottom-6 h-10 w-56 rounded-[50%] bg-black/15 blur-xl" animate={{ scaleX: [1, 0.9, 1] }} transition={{ duration: 3, repeat: Infinity }} />
           <AnimatePresence mode="popLayout">
-            <motion.img
+            <motion.div
               key={f.cut}
-              src={f.cut}
-              alt={f.name}
-              className="relative h-full w-auto object-contain drop-shadow-2xl"
+              role="img"
+              aria-label={f.name}
+              className="relative h-full"
               initial={reduce ? { opacity: 0 } : { y: -260, rotate: -14, opacity: 0, scale: 0.8 }}
               animate={{ y: 0, rotate: 0, opacity: 1, scale: 1 }}
               exit={reduce ? { opacity: 0 } : { x: 220, rotate: 18, opacity: 0, scale: 0.85 }}
               transition={{ type: "spring", stiffness: 110, damping: 14 }}
-            />
+            >
+              <Smoothie flavour={f.cut} />
+            </motion.div>
           </AnimatePresence>
           <motion.span
             key={`chip-${i}`}

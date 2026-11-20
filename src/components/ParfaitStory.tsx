@@ -1,3 +1,4 @@
+import { Blueberry as BB, Granola, MangoCube as MC, Strawberry as SW, StrawberryHalf as SH } from "./art/pieces";
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, MotionValue, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 
@@ -15,21 +16,9 @@ const Drop = ({ p, from, to, x, y, r = 0, children }: { p: MotionValue<number>; 
   return <motion.g style={{ x, y: ty, rotate: rot, opacity: o }}>{children}</motion.g>;
 };
 
-const Blueberry = () => (<g><circle r="11" fill="#34407A" /><circle cx="-4" cy="-4" r="3.5" fill="#7484C9" opacity=".8" /><path d="M-3,-10 L0,-7 L3,-10" stroke="#1E2650" strokeWidth="1.6" fill="none" /></g>);
-const Strawberry = ({ leaf = false }: { leaf?: boolean }) => (
-  <g>
-    <path d="M0,-15 C13,-16 19,-4 15,6 C11,15 3,20 0,22 C-3,20 -11,15 -15,6 C-19,-4 -13,-16 0,-15Z" fill="#E0344B" />
-    {leaf ? (
-      <>
-        {[-8, 0, 8].map((s, i) => <circle key={i} cx={s * 0.8} cy={i % 2 ? 4 : 10} r="1.3" fill="#FFE7A0" />)}
-        <path d="M-10,-14 L-3,-12 L0,-20 L3,-12 L10,-14 L4,-9 L-4,-9Z" fill="#3E9B6A" />
-      </>
-    ) : (
-      <path d="M0,-8 C7,-8 10,-1 8,5 C6,10 2,13 0,14 C-2,13 -6,10 -8,5 C-10,-1 -7,-8 0,-8Z" fill="#FF97A6" />
-    )}
-  </g>
-);
-const Mango = () => <rect x="-11" y="-11" width="22" height="22" rx="5" fill="#FFB627" stroke="#F29A00" strokeWidth="1.5" />;
+const Blueberry = () => <g transform="scale(.95)"><BB /></g>;
+const Strawberry = ({ leaf = false }: { leaf?: boolean }) => <g transform="scale(.9)">{leaf ? <SW /> : <SH />}</g>;
+const Mango = () => <MC />;
 
 const granola = Array.from({ length: 34 }, (_, i) => ({
   x: 92 + ((i * 37) % 140), y: 312 + ((i * 13) % 26), rx: 6 + (i % 3) * 1.5, ry: 4 + (i % 2) * 1.5, c: ["#C98A3E", "#A86A2A", "#E0A85A"][i % 3], r: (i * 47) % 180,
@@ -65,12 +54,12 @@ const Glass = ({ p }: { p: MotionValue<number> }) => {
       <ellipse cx="160" cy="440" rx="110" ry="9" fill="#2B1620" opacity=".12" />
       <g clipPath="url(#inside)">
         <rect x="0" y="0" width="320" height="450" fill="#fff" opacity=".35" />
-        <motion.rect x="0" width="320" fill="#FFFDF6" style={{ y: y1, height: h1 }} />
-        <motion.rect x="0" width="320" fill="#B97A35" style={{ y: g1, height: gh }} />
-        <motion.rect x="0" width="320" fill="#FFFDF6" style={{ y: y2, height: h2 }} />
+        <motion.rect x="0" width="320" fill="url(#ss-yog)" style={{ y: y1, height: h1 }} />
+        <motion.rect x="0" width="320" fill="#9A5E22" style={{ y: g1, height: gh }} />
+        <motion.rect x="0" width="320" fill="url(#ss-yog)" style={{ y: y2, height: h2 }} />
         {granola.map((c, i) => (
           <Drop key={i} p={p} from={0.26 + (i % 10) * 0.012} to={0.36 + (i % 10) * 0.012} x={c.x} y={c.y} r={c.r}>
-            <ellipse rx={c.rx} ry={c.ry} fill={c.c} />
+            <g transform="scale(.55)"><Granola v={i} /></g>
           </Drop>
         ))}
         {fruit.slice(0, 9).map((f, i) => (
