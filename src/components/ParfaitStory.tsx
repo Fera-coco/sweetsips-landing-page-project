@@ -19,7 +19,7 @@ const ParfaitStory = () => {
   const p = reduce ? done : smooth;
   const [step, setStep] = useState(reduce ? steps.length - 1 : 0);
   useMotionValueEvent(scrollYProgress, "change", (v) => { if (!reduce) setStep(Math.min(steps.length - 1, Math.floor(v * steps.length))); });
-  const stageP = useTransform(p, [0.02, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], [0, 1, 1, 2, 2, 3, 3, 4, 4, 5]);
+  const stageP = useTransform(p, [0.2, 0.28, 0.4, 0.48, 0.6, 0.68, 0.8, 0.88], [1, 2, 2, 3, 3, 4, 4, 5]);
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const s = steps[step];
   const height = useMemo(() => (reduce ? "auto" : "500vh"), [reduce]);
