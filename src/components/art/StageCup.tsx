@@ -17,7 +17,7 @@ export const LAST_STAGE = STAGES.length - 1;
 const FADE = 0.3;
 const Layer = ({ src, index, stage }: { src: string; index: number; stage: MotionValue<number> }) => {
   const opacity = useTransform(stage, (v) => {
-    const t = v - index + FADE / 2;
+    const t = v - index + FADE; // fully in exactly when the stage value reaches this index
     const fadeIn = index === 0 ? 1 : Math.min(1, Math.max(0, t / FADE));
     // the stage underneath stays solid until the next one has fully faded in on top, then drops away
     const covered = index !== LAST_STAGE && t - 1 >= FADE;
