@@ -29,7 +29,7 @@ const BuildYourOwn = () => {
           <p className="text-sm font-bold uppercase tracking-widest text-mango">Build your own</p>
           <h2 className="mt-3 font-display text-4xl font-extrabold md:text-6xl">Your parfait, <span className="text-mango">your rules.</span></h2>
           <p className="mt-5 max-w-md text-lg text-cream/75">Start with our creamy Greek yogurt base for {cfa(base.price)}, then add as many toppings as you like at {cfa(TOPPING_PRICE)} each.</p>
-          <div className="relative mx-auto mt-8 aspect-[400/450] w-full max-w-md">
+          <div className="relative mx-auto mt-6 aspect-[400/450] w-full max-w-[15rem] md:mt-8 md:max-w-md">
             <div aria-hidden="true" className="absolute inset-[12%] rounded-full bg-mango/25 blur-3xl" />
             <div className="relative h-full w-full"><ParfaitCup selected={picked} /></div>
           </div>
@@ -37,13 +37,13 @@ const BuildYourOwn = () => {
         <div className="rounded-[2rem] bg-cream p-6 text-plum md:p-8">
           <p className="font-display text-xl font-bold">1. Yogurt base <span className="float-right text-berry">{cfa(base.price)}</span></p>
           <p className="mt-6 font-display text-xl font-bold">2. Choose toppings</p>
-          <ul className="mt-4 grid grid-cols-2 gap-3">
+          <ul className="mt-4 grid grid-cols-2 gap-2 md:gap-3">
             {toppings.map((t, i) => {
               const on = picked.includes(t);
               return (
                 <li key={t}>
                   <button onClick={() => toggle(t)} aria-pressed={on}
-                    className={`flex h-14 w-full items-center justify-between rounded-2xl px-4 text-left text-sm font-bold transition ${on ? "bg-plum text-cream" : `${colours[i % 3]} hover:ring-2 hover:ring-plum`}`}>
+                    className={`flex h-12 w-full items-center justify-between rounded-2xl px-3 md:h-14 md:px-4 text-left text-sm font-bold transition ${on ? "bg-plum text-cream" : `${colours[i % 3]} hover:ring-2 hover:ring-plum`}`}>
                     {t}
                     <span className={`grid h-6 w-6 place-items-center rounded-full ${on ? "bg-mango text-plum" : "bg-white/70"}`}>{on && <Check className="h-4 w-4" aria-hidden="true" />}</span>
                   </button>
