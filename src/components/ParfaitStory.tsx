@@ -1,6 +1,6 @@
 import { StageCup } from "./art/StageCup";
-import { useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 
 const steps = [
   { t: "Start with creamy yogurt.", d: "Thick Greek yogurt is the base of every parfait.", bg: "#FFD9DF" },
@@ -14,15 +14,71 @@ const ParfaitStory = () => {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.4 });
-  const done = useMotionValue(1);
-  const p = reduce ? done : smooth;
   const [step, setStep] = useState(reduce ? steps.length - 1 : 0);
-  useMotionValueEvent(scrollYProgress, "change", (v) => { if (!reduce) setStep(Math.min(steps.length - 1, Math.floor(v * steps.length))); });
-  const stageP = useTransform(p, [0.2, 0.24, 0.4, 0.44, 0.6, 0.64, 0.8, 0.84], [1, 2, 2, 3, 3, 4, 4, 5]);
+  useMotionValueEvent(scrollYProgress, "change", (v) => { if (!reduce) setStep(Math.min(steps.length - 1, Math.round(v * (steps.length - 1)))); });
+  // The cup follows the step, so the picture always matches the words.
+  const stageP = useSpring(1, { stiffness: 70, damping: 18 });
+  useEffect(() => stageP.set(step + 1), [step, stageP]);
+  // One scroll = one step. While the section is pinned, a wheel flick or swipe moves exactly one step;
+  // past the first or last step the page scrolls on as normal.
+  useEffect(() => {
+    if (reduce) return;
+    let locked = false;
+    let last = 0;
+    let touchY = 0;
+    let free = 0; // last time the page scrolled normally (outside the pinned steps)
+    const pinned = () => {
+      const r = ref.current?.getBoundingClientRect();
+      return r && r.top <= 1 && r.bottom >= window.innerHeight - 1 ? r : null;
+    };
+    const target = (dir: number) => {
+      const r = pinned();
+      if (!r) {
+        free = Date.now();
+        return null;
+      }
+      // arriving from outside mid-gesture: settle on the step you reached instead of skipping one
+      const here = -r.top / window.innerHeight;
+      const next = Date.now() - free < 450 ? (dir > 0 ? Math.floor(here) : Math.ceil(here)) : Math.round(here) + dir;
+      if (next < 0 || next > steps.length - 1) return null;
+      return window.scrollY + r.top + next * window.innerHeight;
+    };
+    const go = (y: number) => {
+      locked = true;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      const release = () => (Date.now() - last > 260 ? (locked = false) : setTimeout(release, 120));
+      setTimeout(release, 650);
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 2) return;
+      const y = target(Math.sign(e.deltaY));
+      if (y === null) return;
+      e.preventDefault();
+      last = Date.now();
+      if (!locked) go(y);
+    };
+    const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
+    const onTouchMove = (e: TouchEvent) => {
+      const dy = touchY - e.touches[0].clientY;
+      if (Math.abs(dy) < 6) return;
+      const y = target(Math.sign(dy));
+      if (y === null) return;
+      e.preventDefault();
+      last = Date.now();
+      if (!locked && Math.abs(dy) > 30) go(y);
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [reduce]);
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const s = steps[step];
-  const height = useMemo(() => (reduce ? "auto" : "500vh"), [reduce]);
+  const height = useMemo(() => (reduce ? "auto" : "500svh"), [reduce]);
 
   return (
     <motion.section ref={ref} aria-label="How a parfait is made" style={{ height }} animate={{ backgroundColor: s.bg }} transition={{ duration: 0.6 }} className="relative">
