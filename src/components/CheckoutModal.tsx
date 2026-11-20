@@ -66,12 +66,20 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-cream">
         <DialogHeader>
-          <DialogTitle>Checkout</DialogTitle>
+          <DialogTitle className="font-display text-3xl font-extrabold text-plum">Your cart</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        {items.length === 0 && (
+          <div className="py-10 text-center">
+            <p className="text-5xl" aria-hidden="true">🥣</p>
+            <p className="mt-4 font-display text-2xl font-bold text-plum">Your cart is empty</p>
+            <p className="mt-2 text-plum/60">Add a parfait or smoothie to get started.</p>
+            <button onClick={() => { onOpenChange(false); document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" }); }} className="mt-6 h-12 rounded-full bg-berry px-6 font-bold text-white hover:bg-plum">See the menu</button>
+          </div>
+        )}
+        <div className={items.length === 0 ? "hidden" : "space-y-6"}>
           {/* Cart Items */}
           <div>
             <h3 className="font-semibold mb-4">Your Order</h3>

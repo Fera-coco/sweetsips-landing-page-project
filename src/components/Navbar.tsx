@@ -1,77 +1,58 @@
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from "react";
+import { Menu as MenuIcon, ShoppingBag, X } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+
+export const openCart = () => window.dispatchEvent(new Event("sweetsips:open-cart"));
+
+const links = [
+  { href: "#menu", label: "Menu" },
+  { href: "#build", label: "Build your own" },
+  { href: "#how", label: "How to order" },
+  { href: "#about", label: "About" },
+  { href: "#contact", label: "Contact" },
+];
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsOpen(false);
-    }
-  };
-
-  const navItems = [
-    { label: 'Home', id: 'home' },
-    { label: 'About', id: 'about' },
-    { label: 'Menu', id: 'menu' },
-    { label: 'Team', id: 'team' },
-    { label: 'Contact', id: 'contact' },
-  ];
+  const { totalItems } = useCart();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border shadow-sm">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => scrollToSection('home')}
-            className="text-2xl font-bold text-primary hover:text-primary/80 transition-colors"
-          >
-            SweetSips
+    <header className={`fixed inset-x-0 top-0 z-40 transition-all ${scrolled ? "bg-cream/90 backdrop-blur border-b border-border" : ""}`}>
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4" aria-label="Main">
+        <a href="#top" className="font-display text-2xl font-extrabold tracking-tight text-plum">
+          Sweet<span className="text-berry">Sips</span>
+        </a>
+        <ul className="hidden items-center gap-7 text-sm font-semibold text-plum/80 md:flex">
+          {links.map((l) => (
+            <li key={l.href}><a className="hover:text-berry" href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+        <div className="flex items-center gap-2">
+          <button onClick={openCart} className="relative inline-flex h-11 items-center gap-2 rounded-full bg-plum px-4 text-sm font-bold text-cream hover:bg-berry" aria-label={`Open cart, ${totalItems} items`}>
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Cart</span>
+            <span className="grid h-6 min-w-6 place-items-center rounded-full bg-mango px-1 text-xs text-plum">{totalItems}</span>
           </button>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-colors font-medium"
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
+          <button className="grid h-11 w-11 place-items-center rounded-full border border-border bg-white md:hidden" onClick={() => setOpen((v) => !v)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open}>
+            {open ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
+          </button>
         </div>
-
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden mt-4 pb-4 flex flex-col gap-4">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-colors font-medium text-left"
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </nav>
+      </nav>
+      {open && (
+        <ul className="mx-5 mb-4 grid gap-1 rounded-3xl border border-border bg-white p-3 text-base font-semibold md:hidden">
+          {links.map((l) => (
+            <li key={l.href}><a onClick={() => setOpen(false)} className="block rounded-2xl px-4 py-3 hover:bg-muted" href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      )}
+    </header>
   );
 };
 
