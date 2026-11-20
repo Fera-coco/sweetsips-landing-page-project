@@ -44,7 +44,7 @@ const ParfaitStory = () => {
           </motion.a>
         </div>
         <div className="order-1 flex h-[40svh] items-center justify-center md:order-2 md:h-[70vh]">
-          <div className="flex aspect-[900/979] h-full max-h-[34rem] max-w-full items-center self-center"><StoryCup p={p} /></div>
+          <div className="flex aspect-[520/1164] h-full max-h-[36rem] max-w-full items-center self-center"><StoryCup p={p} /></div>
         </div>
       </div>
     </motion.section>
