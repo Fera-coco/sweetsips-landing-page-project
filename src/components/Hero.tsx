@@ -19,17 +19,16 @@ const flavours = smoothies.map((s, i) => ({ ...s, ...looks[i] }));
 
 const Hero = () => {
   const [i, setI] = useState(0);
-  const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
   const { addItem } = useCart();
   const { toast } = useToast();
   const f = flavours[i];
 
   useEffect(() => {
-    if (paused || reduce) return;
+    if (reduce) return;
     const t = setTimeout(() => setI((v) => (v + 1) % flavours.length), 4200);
     return () => clearTimeout(t);
-  }, [i, paused, reduce]);
+  }, [i, reduce]);
 
   const add = () => {
     addItem({ id: f.name, name: f.name, price: cfa(f.price), image: f.image });
@@ -42,9 +41,6 @@ const Hero = () => {
       className="relative overflow-hidden pt-24 md:pt-28"
       animate={{ backgroundColor: f.bg }}
       transition={{ duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
       aria-roledescription="carousel"
       aria-label="Smoothie flavours"
     >
@@ -89,7 +85,7 @@ const Hero = () => {
               <button key={x.name} role="tab" aria-selected={n === i} aria-label={x.name} onClick={() => setI(n)}
                 className={`relative grid h-16 w-16 place-items-center rounded-2xl transition ${n === i ? "bg-white shadow-lg" : "bg-white/40 hover:bg-white/70"}`}>
                 <img src={x.cut} alt="" className="h-12 w-auto object-contain" />
-                {n === i && !paused && !reduce && (
+                {n === i && !reduce && (
                   <motion.span key={`bar-${i}`} className="absolute -bottom-2 left-2 h-1 rounded-full bg-plum" initial={{ width: 0 }} animate={{ width: "calc(100% - 1rem)" }} transition={{ duration: 4.2, ease: "linear" }} />
                 )}
               </button>
