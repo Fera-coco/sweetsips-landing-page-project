@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Plus } from "lucide-react";
 import { smoothies, cfa } from "@/data/menu";
-import { Smoothie, type Flavour } from "./art/Smoothie";
+import mango from "@/assets/real/smoothie-mango.webp";
+import strawberry from "@/assets/real/smoothie-strawberry.webp";
+import pineapple from "@/assets/real/smoothie-pineapple.webp";
+import watermelon from "@/assets/real/smoothie-watermelon.webp";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 
 const looks = [
-  { cut: "mango" as Flavour, word: "MANGO", bg: "#FFC857", deep: "#6E3F00", chip: "#FFE3A3" },
-  { cut: "strawberry" as Flavour, word: "BERRY", bg: "#FBC0CB", deep: "#7D1730", chip: "#FFD9DF" },
-  { cut: "pineapple" as Flavour, word: "PINEAPPLE", bg: "#FFEB8A", deep: "#5E4E06", chip: "#FFF4BC" },
-  { cut: "cucumber" as Flavour, word: "CUCUMBER", bg: "#B5E2B9", deep: "#164B30", chip: "#D7F0E2" },
+  { cut: mango, word: "MANGO", bg: "#FFC857", deep: "#6E3F00", chip: "#FFE3A3" },
+  { cut: strawberry, word: "BERRY", bg: "#FBC0CB", deep: "#7D1730", chip: "#FFD9DF" },
+  { cut: pineapple, word: "PINEAPPLE", bg: "#FFEB8A", deep: "#5E4E06", chip: "#FFF4BC" },
+  { cut: watermelon, word: "MELON", bg: "#FFB8B0", deep: "#7A1A22", chip: "#FFE0DC" },
 ];
 const flavours = smoothies.map((s, i) => ({ ...s, ...looks[i] }));
 
@@ -85,7 +88,7 @@ const Hero = () => {
             {flavours.map((x, n) => (
               <button key={x.name} role="tab" aria-selected={n === i} aria-label={x.name} onClick={() => setI(n)}
                 className={`relative grid h-16 w-16 place-items-center rounded-2xl transition ${n === i ? "bg-white shadow-lg" : "bg-white/40 hover:bg-white/70"}`}>
-                <span className="h-12"><Smoothie flavour={x.cut} small /></span>
+                <img src={x.cut} alt="" className="h-12 w-auto object-contain" />
                 {n === i && !paused && !reduce && (
                   <motion.span key={`bar-${i}`} className="absolute -bottom-2 left-2 h-1 rounded-full bg-plum" initial={{ width: 0 }} animate={{ width: "calc(100% - 1rem)" }} transition={{ duration: 4.2, ease: "linear" }} />
                 )}
@@ -107,7 +110,7 @@ const Hero = () => {
               exit={reduce ? { opacity: 0 } : { x: 220, rotate: 18, opacity: 0, scale: 0.85 }}
               transition={{ type: "spring", stiffness: 110, damping: 14 }}
             >
-              <Smoothie flavour={f.cut} />
+              <img src={f.cut} alt="" className="h-full w-auto object-contain drop-shadow-2xl" draggable={false} />
             </motion.div>
           </AnimatePresence>
           <motion.span
