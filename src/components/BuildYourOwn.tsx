@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { motion } from "framer-motion";
-import { BuilderCup } from "./art/StageCup";
+import fullParfait from "@/assets/real/stage-5.webp";
 import mangoImg from "@/assets/real/mango.webp";
 import pineImg from "@/assets/real/pineapple.webp";
 import bananaImg from "@/assets/real/banana.webp";
@@ -44,7 +44,7 @@ const BuildYourOwn = () => {
           <p className="mt-5 max-w-md text-lg text-cream/75">Start with our creamy Greek yogurt base for {cfa(base.price)}, then add as many toppings as you like at {cfa(TOPPING_PRICE)} each.</p>
           <div className="relative mx-auto mt-6 w-full max-w-[8rem] md:mt-8 md:max-w-[13rem]">
             <div aria-hidden="true" className="absolute inset-[12%] rounded-full bg-mango/25 blur-3xl" />
-            <div className="relative"><BuilderCup toppings={picked} /></div>
+            <img src={fullParfait} alt="A layered parfait with yogurt, granola, berries and mango" className="relative w-full" loading="lazy" />
           </div>
         </div>
         <div className="rounded-[2rem] bg-cream p-6 text-plum md:p-8">
