@@ -5,9 +5,10 @@ import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReduce
 const steps = [
   { t: "Start with creamy yogurt.", d: "Thick Greek yogurt is the base of every parfait.", bg: "#FFD9DF" },
   { t: "Add the crunch.", d: "A layer of golden granola for that bite.", bg: "#FFF1C2" },
-  { t: "Pile on fresh fruit.", d: "Mango, strawberries and blueberries, cut fresh every day.", bg: "#D7F0E2" },
-  { t: "Layer it up.", d: "More creamy yogurt between every layer, right to the top.", bg: "#FFE3A3" },
-];
+  { t: "Pile on fresh berries.", d: "Strawberries and blueberries, cut fresh every day, on more creamy yogurt.", bg: "#D7F0E2" },
+  { t: "Go tropical.", d: "Another layer of yogurt, then juicy mango and pineapple.", bg: "#FFE3A3" },
+  { t: "Crown it.", d: "A swirl of yogurt and a pile of fresh berries on top. Ready for you.", bg: "#FBC0CB" },
+]
 
 const ParfaitStory = () => {
   const ref = useRef<HTMLElement>(null);
@@ -16,12 +17,12 @@ const ParfaitStory = () => {
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.4 });
   const done = useMotionValue(1);
   const p = reduce ? done : smooth;
-  const [step, setStep] = useState(reduce ? 3 : 0);
-  useMotionValueEvent(scrollYProgress, "change", (v) => { if (!reduce) setStep(Math.min(3, Math.floor(v * 4.4))); });
-  const stageP = useTransform(p, [0.02, 0.2, 0.42, 0.62, 0.8, 0.95], [0, 1, 2, 3, 4, 5]);
+  const [step, setStep] = useState(reduce ? steps.length - 1 : 0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => { if (!reduce) setStep(Math.min(steps.length - 1, Math.floor(v * steps.length))); });
+  const stageP = useTransform(p, [0.02, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], [0, 1, 1, 2, 2, 3, 3, 4, 4, 5]);
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const s = steps[step];
-  const height = useMemo(() => (reduce ? "auto" : "420vh"), [reduce]);
+  const height = useMemo(() => (reduce ? "auto" : "500vh"), [reduce]);
 
   return (
     <motion.section ref={ref} aria-label="How a parfait is made" style={{ height }} animate={{ backgroundColor: s.bg }} transition={{ duration: 0.6 }} className="relative">
@@ -37,10 +38,10 @@ const ParfaitStory = () => {
             </AnimatePresence>
           </div>
           <div className="mt-6 flex items-center gap-4">
-            <span className="font-display text-xl font-extrabold text-plum">0{step + 1}<span className="text-plum/30"> / 04</span></span>
+            <span className="font-display text-xl font-extrabold text-plum">0{step + 1}<span className="text-plum/30"> / 0{steps.length}</span></span>
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-plum/10"><motion.div className="h-full rounded-full bg-plum" style={{ width: reduce ? "100%" : bar }} /></div>
           </div>
-          <motion.a href="#build" animate={{ opacity: step === 3 ? 1 : 0, y: step === 3 ? 0 : 10 }} className="mt-8 inline-flex h-14 items-center rounded-full bg-berry px-7 font-bold text-white hover:bg-plum" tabIndex={step === 3 ? 0 : -1}>
+          <motion.a href="#build" animate={{ opacity: step === steps.length - 1 ? 1 : 0, y: step === steps.length - 1 ? 0 : 10 }} className="mt-8 inline-flex h-14 items-center rounded-full bg-berry px-7 font-bold text-white hover:bg-plum" tabIndex={step === steps.length - 1 ? 0 : -1}>
             Build yours now
           </motion.a>
         </div>
